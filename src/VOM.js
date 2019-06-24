@@ -7,7 +7,7 @@
  * https://github.com/tamyam/VOM/LICENSE
  */
 
-;(function(root, undef) {
+;(function(root, document, undef) {
   // VOM selector
   var VOM = root.VOM = function(selector) {
     var match = selector.match(/^([#.]?)([A-Za-z](?:\w|\\[^ ])+)$/);
@@ -28,15 +28,15 @@
   };
 
   // VOMObject
-  var VOMO = root.VOMO = function() {
+  var VOMO = root.VOMO = function(array) {
     var temp = [];
-    var args = temp.filter.call(arguments, function(x) {
+    var args = temp.filter.call(array, function(x) {
       var returnBool = !~temp.indexOf(x);
       if(returnBool) temp.push(x);
       return returnBool;
     });
     this.length = args.length;
-    switch(args.length) {
+    switch(this.length) {
       case 0:
         break;
       case 1:
@@ -47,7 +47,8 @@
           for(var i = 0; i < this.length; i++) {
             this[i] = args[i];
           }
-        })();
+        }).bind(this)();
+        break;
     }
     this.tag = this[0] ? this[0].tagName : undef;
   };
@@ -115,4 +116,33 @@
       }
     });
   });
-})(this);
+
+  // fn
+  var fn = {
+    id: function(selector) {
+      var el = document.getElementById(selector);
+      return el == null ? new VOMO([]) : new VOMO([el]);
+    },
+    class: function(selector) {
+      var els = document.getElementsByClassName(selector);
+      return new VOMO(els);
+    },
+    name: function(selector) {
+      var els = document.getElementsByName(selector);
+      return new VOMO(els);
+    },
+    tag: function(selector) {
+      var els = document.getElementsByTagName(selector);
+      return new VOMO(els);
+    },
+    query: function(selector) {
+      var els = document.querySelectorAll(selector);
+      return new VOMO(els);
+    }
+  };
+  for(var key in fn) {
+    if(fn.hasOwnProperty(key)) {
+      VOM[key] = fn[key];
+    }
+  }
+})(this, document);
