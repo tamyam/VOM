@@ -118,6 +118,35 @@
           el.removeEventListener(typ, listener, options);
         });
       }, this);
+    },
+    // class
+    addClass: function() {
+      var args = arguments;
+      allCall(function(el) {
+        el.classList.add.apply(el.classList, args);
+      }, this);
+      return this;
+    },
+    removeClass: function() {
+      var args = arguments;
+      allCall(function(el) {
+        el.classList.remove.apply(el.classList, args);
+      }, this);
+      return this;
+    },
+    hasClass: function(classname) {
+      var hasClass = false;
+      allCall(function(el) {
+        hasClass = el.classList.contains(classname) || hasClass;
+      }, this);
+      return hasClass;
+    },
+    toggleClass: function() {
+      var args = arguments;
+      allCall(function(el) {
+        el.classList.toggle.apply(el.classList, args);
+      }, this);
+      return this;
     }
   };
   var attrs = ["innerHTML", "value", "className"];
