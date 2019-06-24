@@ -110,6 +110,14 @@
           el.addEventListener(typ, listener, options);
         });
       }, this);
+    },
+    off: function(type, listener, options) {
+      allCall(function(el) {
+        var array = type.split(" ");
+        array.forEach(function(typ) {
+          el.removeEventListener(typ, listener, options);
+        });
+      }, this);
     }
   };
   var attrs = ["innerHTML", "value", "className"];
