@@ -110,6 +110,7 @@
           el.addEventListener(typ, listener, options);
         });
       }, this);
+      return this;
     },
     off: function(type, listener, options) {
       allCall(function(el) {
@@ -118,6 +119,7 @@
           el.removeEventListener(typ, listener, options);
         });
       }, this);
+      return this;
     },
     // class
     addClass: function() {
