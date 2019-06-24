@@ -53,6 +53,12 @@
   };
 
   // VOM.fn
+  function allCall(func, self) {
+    for(var i = 0; i < self.length; i++) {
+      func(self[i]);
+    }
+  }
+
   VOM.fn = VOMO.prototype = {
     constructor: VOM,
 
