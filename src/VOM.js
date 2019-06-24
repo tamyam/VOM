@@ -101,6 +101,15 @@
         this.value = val;
         return this;
       }
+    },
+    // EventListener
+    on: function(type, listener, options) {
+      allCall(function(el) {
+        var array = type.split(" ");
+        array.forEach(function(typ) {
+          el.addEventListener(typ, listener, options);
+        });
+      }, this);
     }
   };
   var attrs = ["innerHTML", "value", "className"];
