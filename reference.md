@@ -36,8 +36,9 @@ VOM JavaScript Library reference
 - *elem*.innerHTML = *html*
 
 ### value
-- *value* = *elem*.html()
-- *elem*.html(*value*)
+There was an error in the past reference (1.0‐1.1)
+- *value* = *elem*.val()
+- *elem*.val(*value*)
 - *value* = *elem*.value
 - *elem*.value = *value*
 
