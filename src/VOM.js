@@ -175,6 +175,43 @@
     },
     index: function(i) {
       return new VOMO([this[i]]);
+    },
+    append: function() {
+      var args = arguments;
+      allCall(function(el) {
+        for(var i = 0; i < args.length; i++) {
+          for(var j = 0; j < args[i].length; j++) {
+            el.appendChild(args[i][j].cloneNode(true));
+          }
+          if(i === 0) args[i].remove();
+        }
+      }, this);
+      return this;
+    },
+    prepend: function() {
+      var args = arguments;
+      allCall(function(el) {
+        for(var i = 0; i < args.length; i++) {
+          for(var j = 0; j < args[i].length; j++) {
+            el.insertBefore(args[i][j].cloneNode(true), el.firstElementChild);
+          }
+          if(i === 0) args[i].remove();
+        }
+      }, this);
+      return this;
+    },
+    parent: function() {
+      var array = [];
+      allCall(function(el) {
+        array.push(el.parentNode);
+      }, this);
+      return new VOMO(array);
+    },
+    remove: function() {
+      allCall(function(el) {
+        var parent = el.parentNode;
+        if(parent != null) parent.removeChild(el);
+      }, this);
     }
   };
   var attrs = ["innerHTML", "value", "className"];
