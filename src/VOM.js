@@ -172,6 +172,9 @@
         }, this);
       }
       return this;
+    },
+    index: function(i) {
+      return new VOMO([this[i]]);
     }
   };
   var attrs = ["innerHTML", "value", "className"];
