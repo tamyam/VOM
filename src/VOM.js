@@ -7,7 +7,7 @@
  * https://github.com/tamyam/VOM/blob/master/LICENSE
  */
 
-;(function(root, document, undef) {
+;((root, document, undef) => {
   // VOM selector
   const VOM = root.VOM = function(selector) {
     const match = selector.match(/^([#.]?)([A-Za-z](?:\w|\\[^ ])+)$/);
