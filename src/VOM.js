@@ -230,6 +230,7 @@
 
   // fn
   var fn = {
+    // elem
     id: function(selector) {
       var el = document.getElementById(selector);
       return el == null ? new VOMO([]) : new VOMO([el]);
@@ -255,6 +256,16 @@
     },
     createText: function(text) {
       return new VOMO([document.createTextNode(text)]);
+    },
+    // object
+    type: function(obj) {
+      if(typeof obj === "number" && obj !== obj) {
+        return "NaN";
+      } else if(Array.isArray(obj)) {
+        return "Array";
+      } else {
+        return Object.prototype.toString.call(obj).slice(8, -1);
+      }
     }
   };
   for(var key in fn) {
