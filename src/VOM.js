@@ -34,7 +34,7 @@
     }
   };
 
-  class VOMO {
+  const VOMO = root.VOMO = class {
     constructor(array) {
       let temp = [];
       const args = temp.filter.call(array, x => {
