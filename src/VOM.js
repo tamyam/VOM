@@ -249,8 +249,8 @@
       var els = document.getElementsByName(selector);
       return new VOMO(els);
     },
-    tag: function(selector) {
-      var els = document.getElementsByTagName(selector);
+    tag: function(selector, namespace) {
+      var els = namespace == null ? document.getElementsByTagName(selector) : document.getElementsByTagNameNS(namespace, selector);
       return new VOMO(els);
     },
     query: function(selector) {
