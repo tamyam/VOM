@@ -251,10 +251,10 @@
       return new VOMO(els);
     },
     createElem: function(tag, namespace) {
-      return new VOMO(namespace == null ? document.createElement(tag) : document.createElementNS(namespace, tag));
+      return new VOMO([namespace == null ? document.createElement(tag) : document.createElementNS(namespace, tag)]);
     },
     createText: function(text) {
-      return new VOMO(document.createTextNode(text));
+      return new VOMO([document.createTextNode(text)]);
     }
   };
   for(var key in fn) {
