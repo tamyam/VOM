@@ -7,7 +7,7 @@
  * https://github.com/tamyam/VOM/blob/master/LICENSE
  */
 
-;((root, document, undef) => {
+;((root, undef) => {
   // VOM selector
   const VOM = root.VOM = selector => {
     const match = selector.match(/^([#.]?)([A-Za-z](?:\w|\\[^ ])+)$/);
@@ -28,36 +28,32 @@
   };
 
   // VOMObject
-  const VOMO = root.VOMO = function(array) {
-    let temp = [];
-    const args = temp.filter.call(array, x => {
-      const returnBool = !~temp.indexOf(x) && x != null;
-      if(returnBool) temp.push(x);
-      return returnBool;
-    });
-    this.length = args.length;
-    if(this.length !== 0) {
-      if(this.length === 1) {
-        this[0] = args[0];
-      } else {
-        for(let i = 0; i < this.length; i++) {
-          this[i] = args[i];
-        }
-      }
-      this.tag = this[0] ? this[0].tagName : undef;
-    }
-  };
-
-  // VOM.fn
   const allCall = (func, self) => {
     for(let i = 0; i < self.length; i++) {
       func(self[i]);
     }
   };
 
-  VOM.fn = VOMO.prototype = {
-    constructor: VOM,
-
+  const VOMO = root.VOMO = class {
+    constructor(array) {
+      let temp = [];
+      const args = temp.filter.call(array, x => {
+        const returnBool = !~temp.indexOf(x) && x != null;
+        if(returnBool) temp.push(x);
+        return returnBool;
+      });
+      this.length = args.length;
+      if(this.length !== 0) {
+        if(this.length === 1) {
+          this[0] = args[0];
+        } else {
+          for(let i = 0; i < this.length; i++) {
+            this[i] = args[i];
+          }
+        }
+        this.tag = this[0] ? this[0].tagName : undef;
+      }
+    }
     find(selector) {
       const match = selector.match(/^(\.?)([A-Za-z](?:\w|\\[^ ])+)$/);
       const selectorNames = {
@@ -73,38 +69,38 @@
       } else {
         return this.findQuery(selector);
       }
-    },
+    }
     findClass(selector) {
       let array = [];
       allCall(el => {
         array.push.apply(array, el.getElementsByClassName(selector));
       }, this);
       return new VOMO(array);
-    },
-    findTag(selector, namespace) {
+    }
+    findTag(selector, namespace = undef) {
       let array = [];
       allCall(el => {
         array.push.apply(array, namespace == null ? el.getElementsByTagName(selector) : el.getElementsByTagNameNS(namespace, selector));
       }, this);
       return new VOMO(array);
-    },
+    }
     findQuery(selector) {
       let array = [];
       allCall(el => {
         array.push.apply(array, el.querySelectorAll(selector));
       }, this);
       return new VOMO(array);
-    },
-    attr(name, value) {
+    }
+    attr(nameOrObj, value = undef) {
       if(value == null) {
-        if(name.constructor === String) {
-          if(this[0] ? this[0].hasAttribute(name) : undef) {
-            return this[0] ? this[0].getAttribute(name) : undef;
+        if(nameOrObj.constructor === String) {
+          if(this[0] ? this[0].hasAttribute(nameOrObj) : undef) {
+            return this[0] ? this[0].getAttribute(nameOrObj) : undef;
           }
         } else {
-          for(let key in name) {
-            if(name.hasOwnProperty(key)) {
-              const val = name[key];
+          for(let key in nameOrObj) {
+            if(nameOrObj.hasOwnProperty(key)) {
+              const val = nameOrObj[key];
               allCall(el => {
                 el.setAttribute(key, val);
               }, this);
@@ -113,29 +109,29 @@
         }
       } else {
         allCall(el => {
-          el.setAttribute(name, value);
+          el.setAttribute(nameOrObj, value);
         }, this);
       }
       return this;
-    },
-    html(val) {
+    }
+    html(val = undef) {
       if(val == null) {
         return this.innerHTML;
       } else {
         this.innerHTML = val;
         return this;
       }
-    },
-    val(val) {
+    }
+    val(val = undef) {
       if(val == null) {
         return this.value;
       } else {
         this.value = val;
         return this;
       }
-    },
+    }
     // EventListener
-    on(types, listener, options) {
+    on(types, listener, options = undef) {
       allCall(el => {
         const array = types.split(" ");
         array.forEach(type => {
@@ -143,8 +139,8 @@
         });
       }, this);
       return this;
-    },
-    off(types, listener, options) {
+    }
+    off(types, listener, options = undef) {
       allCall(el => {
         const array = types.split(" ");
         array.forEach(type => {
@@ -152,43 +148,41 @@
         });
       }, this);
       return this;
-    },
+    }
     // class
-    addClass() {
-      const args = arguments;
+    addClass(...classname) {
       allCall(el => {
-        el.classList.add.apply(el.classList, args);
+        el.classList.add(...classname);
       }, this);
       return this;
-    },
-    removeClass() {
+    }
+    removeClass(...classname) {
       const args = arguments;
       allCall(el => {
-        el.classList.remove.apply(el.classList, args);
+        el.classList.remove(...classname);
       }, this);
       return this;
-    },
+    }
     hasClass(classname) {
       let hasClass = false;
       allCall(el => {
         hasClass = el.classList.contains(classname) || hasClass;
       }, this);
       return hasClass;
-    },
-    toggleClass() {
-      const args = arguments;
+    }
+    toggleClass(...classname) {
       allCall(el => {
-        el.classList.toggle.apply(el.classList, args);
+        el.classList.toggle(...classname);
       }, this);
       return this;
-    },
+    }
     // CSS
-    css(name, value) {
+    css(nameOrObj, value = undef) {
       if(value == null) {
-        if(typeof name === "object" && name != null) {
-          for(let key in name) {
-            if(name.hasOwnProperty(key)) {
-              const val = name[key];
+        if(typeof nameOrObj === "object" && name != null) {
+          for(let key in nameOrObj) {
+            if(nameOrObj.hasOwnProperty(key)) {
+              const val = nameOrObj[key];
               allCall(el => {
                 el.style.setProperty(key, val);
               }, this);
@@ -196,56 +190,56 @@
           }
           return this;
         } else {
-          return (this[0] || {}).style.getPropertyValue(name);
+          return (this[0] || {}).style.getPropertyValue(nameOrObj);
         }
       } else {
         allCall(el => {
-          el.style.setProperty(name, value);
+          el.style.setProperty(nameOrObj, value);
         }, this);
       }
       return this;
-    },
+    }
     index(i) {
       return new VOMO([this[i]]);
-    },
-    append() {
-      const args = arguments;
+    }
+    append(...elem) {
       allCall(el => {
-        for(let i = 0; i < args.length; i++) {
-          for(let j = 0; j < args[i].length; j++) {
-            el.appendChild(args[i][j].cloneNode(true));
+        for(let i = 0; i < elem.length; i++) {
+          for(let j = 0; j < elem[i].length; j++) {
+            el.appendChild(elem[i][j].cloneNode(true));
           }
-          if(i === 0) args[i].remove();
+          if(i === 0) elem[i].remove();
         }
       }, this);
       return this;
-    },
-    prepend() {
-      const args = arguments;
+    }
+    prepend(...elem) {
       allCall(el => {
-        for(let i = 0; i < args.length; i++) {
-          for(let j = 0; j < args[i].length; j++) {
-            el.insertBefore(args[i][j].cloneNode(true), el.firstElementChild);
+        for(let i = 0; i < elem.length; i++) {
+          for(let j = 0; j < elem[i].length; j++) {
+            el.insertBefore(elem[i][j].cloneNode(true), el.firstElementChild);
           }
-          if(i === 0) args[i].remove();
+          if(i === 0) elem[i].remove();
         }
       }, this);
       return this;
-    },
+    }
     parent() {
       let array = [];
       allCall(el => {
         array.push(el.parentNode);
       }, this);
       return new VOMO(array);
-    },
+    }
     remove() {
       allCall(el => {
         const parent = el.parentNode;
         if(parent != null) parent.removeChild(el);
       }, this);
     }
-  };
+  }
+
+  VOM.fn = VOMO.prototype;
   const attrs = ["innerHTML", "value", "className"];
   attrs.forEach(attr => {
     Object.defineProperty(VOM.fn, attr, {
@@ -281,7 +275,7 @@
       const els = document.getElementsByName(selector);
       return new VOMO(els);
     },
-    tag(selector, namespace) {
+    tag(selector, namespace = undef) {
       const els = namespace == null ? document.getElementsByTagName(selector) : document.getElementsByTagNameNS(namespace, selector);
       return new VOMO(els);
     },
@@ -289,7 +283,7 @@
       const els = document.querySelectorAll(selector);
       return new VOMO(els);
     },
-    createElem(tag, namespace) {
+    createElem(tag, namespace = undef) {
       return new VOMO([namespace == null ? document.createElement(tag) : document.createElementNS(namespace, tag)]);
     },
     createText(text) {
@@ -297,7 +291,7 @@
     },
     // object
     type(obj) {
-      if(typeof obj === "number" && obj !== obj) {
+      if(Number.isNaN(obj)) {
         return "NaN";
       } else if(Array.isArray(obj)) {
         return "Array";
@@ -322,4 +316,4 @@
       VOM[key] = fn[key];
     }
   }
-})(this, document);
+})(this);
