@@ -28,7 +28,6 @@
   };
 
   // VOMObject
-  // DONE to class
   const VOMO = root.VOMO = function(array) {
     let temp = [];
     const args = temp.filter.call(array, x => {
@@ -80,21 +79,21 @@
     },
     findClass(selector) {
       let array = [];
-      allCall(function(el) {
+      allCall(el => {
         array.push.apply(array, el.getElementsByClassName(selector));
       }, this);
       return new VOMO(array);
     },
     findTag(selector, namespace) {
       let array = [];
-      allCall(function(el) {
+      allCall(el => {
         array.push.apply(array, namespace == null ? el.getElementsByTagName(selector) : el.getElementsByTagNameNS(namespace, selector));
       }, this);
       return new VOMO(array);
     },
     findQuery(selector) {
       let array = [];
-      allCall(function(el) {
+      allCall(el => {
         array.push.apply(array, el.querySelectorAll(selector));
       }, this);
       return new VOMO(array);
@@ -109,14 +108,14 @@
           for(let key in name) {
             if(name.hasOwnProperty(key)) {
               const val = name[key];
-              allCall(function(el) {
+              allCall(el => {
                 el.setAttribute(key, val);
               }, this);
             }
           }
         }
       } else {
-        allCall(function(el) {
+        allCall(el => {
           el.setAttribute(name, value);
         }, this);
       }
@@ -139,20 +138,20 @@
       }
     },
     // EventListener
-    on(type, listener, options) {
-      allCall(function(el) {
-        const array = type.split(" ");
-        array.forEach(function(typ) {
-          el.addEventListener(typ, listener, options);
+    on(types, listener, options) {
+      allCall(el => {
+        const array = types.split(" ");
+        array.forEach(type => {
+          el.addEventListener(type, listener, options);
         });
       }, this);
       return this;
     },
-    off(type, listener, options) {
-      allCall(function(el) {
-        const array = type.split(" ");
-        array.forEach(function(typ) {
-          el.removeEventListener(typ, listener, options);
+    off(types, listener, options) {
+      allCall(el => {
+        const array = types.split(" ");
+        array.forEach(type => {
+          el.removeEventListener(type, listener, options);
         });
       }, this);
       return this;
@@ -160,28 +159,28 @@
     // class
     addClass() {
       const args = arguments;
-      allCall(function(el) {
+      allCall(el => {
         el.classList.add.apply(el.classList, args);
       }, this);
       return this;
     },
     removeClass() {
       const args = arguments;
-      allCall(function(el) {
+      allCall(el => {
         el.classList.remove.apply(el.classList, args);
       }, this);
       return this;
     },
     hasClass(classname) {
       let hasClass = false;
-      allCall(function(el) {
+      allCall(el => {
         hasClass = el.classList.contains(classname) || hasClass;
       }, this);
       return hasClass;
     },
     toggleClass() {
       const args = arguments;
-      allCall(function(el) {
+      allCall(el => {
         el.classList.toggle.apply(el.classList, args);
       }, this);
       return this;
@@ -193,7 +192,7 @@
           for(let key in name) {
             if(name.hasOwnProperty(key)) {
               const val = name[key];
-              allCall(function(el) {
+              allCall(el => {
                 el.style.setProperty(key, val);
               }, this);
             }
@@ -203,7 +202,7 @@
           return (this[0] || {}).style.getPropertyValue(name);
         }
       } else {
-        allCall(function(el) {
+        allCall(el => {
           el.style.setProperty(name, value);
         }, this);
       }
@@ -214,7 +213,7 @@
     },
     append() {
       const args = arguments;
-      allCall(function(el) {
+      allCall(el => {
         for(let i = 0; i < args.length; i++) {
           for(let j = 0; j < args[i].length; j++) {
             el.appendChild(args[i][j].cloneNode(true));
@@ -226,7 +225,7 @@
     },
     prepend() {
       const args = arguments;
-      allCall(function(el) {
+      allCall(el => {
         for(let i = 0; i < args.length; i++) {
           for(let j = 0; j < args[i].length; j++) {
             el.insertBefore(args[i][j].cloneNode(true), el.firstElementChild);
@@ -238,26 +237,26 @@
     },
     parent() {
       let array = [];
-      allCall(function(el) {
+      allCall(el => {
         array.push(el.parentNode);
       }, this);
       return new VOMO(array);
     },
     remove() {
-      allCall(function(el) {
+      allCall(el => {
         const parent = el.parentNode;
         if(parent != null) parent.removeChild(el);
       }, this);
     }
   };
   const attrs = ["innerHTML", "value", "className"];
-  attrs.forEach(function(attr) {
+  attrs.forEach(attr => {
     Object.defineProperty(VOM.fn, attr, {
       get() {
         return this[0] ? this[0][attr] : undef;
       },
       set(val) {
-        allCall(function(el) {
+        allCall(el => {
           el[attr] = val;
         }, this);
       }
@@ -266,7 +265,7 @@
 
   // ArrayMethod
   const arrayMethods = ["forEach", "pop", "push", "reverse", "shift", "unshift"];
-  arrayMethods.forEach(function(method) {
+  arrayMethods.forEach(method => {
     VOM.fn[method] = Array.prototype[method];
   });
 
