@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2019 tamyam
  * Released under the MIT license
- * https://github.com/tamyam/VOM/LICENSE
+ * https://github.com/tamyam/VOM/blob/master/LICENSE
  */
 
 ;(function(root, document, undef) {
