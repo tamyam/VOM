@@ -7,11 +7,11 @@
  * https://github.com/tamyam/VOM/blob/master/LICENSE
  */
 
-;(function(root, document, undef) {
+;((root, document, undef) => {
   // VOM selector
-  var VOM = root.VOM = function(selector) {
-    var match = selector.match(/^([#.]?)([A-Za-z](?:\w|\\[^ ])+)$/);
-    var selectorNames = {
+  const VOM = root.VOM = selector => {
+    const match = selector.match(/^([#.]?)([A-Za-z](?:\w|\\[^ ])+)$/);
+    const selectorNames = {
       "#": "id",
       ".": "class",
       "": "tag"
@@ -28,10 +28,10 @@
   };
 
   // VOMObject
-  var VOMO = root.VOMO = function(array) {
-    var temp = [];
-    var args = temp.filter.call(array, function(x) {
-      var returnBool = !~temp.indexOf(x);
+  const VOMO = root.VOMO = function(array) {
+    let temp = [];
+    const args = temp.filter.call(array, x => {
+      const returnBool = !~temp.indexOf(x);
       if(returnBool) temp.push(x);
       return returnBool;
     });
@@ -43,29 +43,27 @@
         this[0] = args[0];
         break;
       default:
-        (function() {
-          for(var i = 0; i < this.length; i++) {
-            this[i] = args[i];
-          }
-        }).bind(this)();
+        for(let i = 0; i < this.length; i++) {
+          this[i] = args[i];
+        }
         break;
     }
     this.tag = this[0] ? this[0].tagName : undef;
   };
 
   // VOM.fn
-  function allCall(func, self) {
-    for(var i = 0; i < self.length; i++) {
+  const allCall = (func, self) => {
+    for(let i = 0; i < self.length; i++) {
       func(self[i]);
     }
-  }
+  };
 
   VOM.fn = VOMO.prototype = {
     constructor: VOM,
 
-    find: function(selector) {
-      var match = selector.match(/^(\.?)([A-Za-z](?:\w|\\[^ ])+)$/);
-      var selectorNames = {
+    find(selector) {
+      const match = selector.match(/^(\.?)([A-Za-z](?:\w|\\[^ ])+)$/);
+      const selectorNames = {
         ".": "findClass",
         "": "findTag"
       };
@@ -79,51 +77,51 @@
         return this.findQuery(selector);
       }
     },
-    findClass: function(selector) {
-      var array = [];
-      allCall(function(el) {
+    findClass(selector) {
+      let array = [];
+      allCall(el => {
         array.push.apply(array, el.getElementsByClassName(selector));
       }, this);
       return new VOMO(array);
     },
-    findTag: function(selector, namespace) {
-      var array = [];
-      allCall(function(el) {
+    findTag(selector, namespace) {
+      let array = [];
+      allCall(el => {
         array.push.apply(array, namespace == null ? el.getElementsByTagName(selector) : el.getElementsByTagNameNS(namespace, selector));
       }, this);
       return new VOMO(array);
     },
-    findQuery: function(selector) {
-      var array = [];
-      allCall(function(el) {
+    findQuery(selector) {
+      let array = [];
+      allCall(el => {
         array.push.apply(array, el.querySelectorAll(selector));
       }, this);
       return new VOMO(array);
     },
-    attr: function(name, value) {
+    attr(name, value) {
       if(value == null) {
         if(name.constructor === String) {
           if(this[0] ? this[0].hasAttribute(name) : undef) {
             return this[0] ? this[0].getAttribute(name) : undef;
           }
         } else {
-          for(var key in name) {
+          for(let key in name) {
             if(name.hasOwnProperty(key)) {
-              var val = name[key];
-              allCall(function(el) {
+              const val = name[key];
+              allCall(el => {
                 el.setAttribute(key, val);
               }, this);
             }
           }
         }
       } else {
-        allCall(function(el) {
+        allCall(el => {
           el.setAttribute(name, value);
         }, this);
       }
       return this;
     },
-    html: function(val) {
+    html(val) {
       if(val == null) {
         return this.innerHTML;
       } else {
@@ -131,7 +129,7 @@
         return this;
       }
     },
-    val: function(val) {
+    val(val) {
       if(val == null) {
         return this.value;
       } else {
@@ -140,61 +138,61 @@
       }
     },
     // EventListener
-    on: function(type, listener, options) {
-      allCall(function(el) {
-        var array = type.split(" ");
-        array.forEach(function(typ) {
-          el.addEventListener(typ, listener, options);
+    on(types, listener, options) {
+      allCall(el => {
+        const array = types.split(" ");
+        array.forEach(type => {
+          el.addEventListener(type, listener, options);
         });
       }, this);
       return this;
     },
-    off: function(type, listener, options) {
-      allCall(function(el) {
-        var array = type.split(" ");
-        array.forEach(function(typ) {
-          el.removeEventListener(typ, listener, options);
+    off(types, listener, options) {
+      allCall(el => {
+        const array = types.split(" ");
+        array.forEach(type => {
+          el.removeEventListener(type, listener, options);
         });
       }, this);
       return this;
     },
     // class
-    addClass: function() {
-      var args = arguments;
-      allCall(function(el) {
+    addClass() {
+      const args = arguments;
+      allCall(el => {
         el.classList.add.apply(el.classList, args);
       }, this);
       return this;
     },
-    removeClass: function() {
-      var args = arguments;
-      allCall(function(el) {
+    removeClass() {
+      const args = arguments;
+      allCall(el => {
         el.classList.remove.apply(el.classList, args);
       }, this);
       return this;
     },
-    hasClass: function(classname) {
-      var hasClass = false;
-      allCall(function(el) {
+    hasClass(classname) {
+      let hasClass = false;
+      allCall(el => {
         hasClass = el.classList.contains(classname) || hasClass;
       }, this);
       return hasClass;
     },
-    toggleClass: function() {
-      var args = arguments;
-      allCall(function(el) {
+    toggleClass() {
+      const args = arguments;
+      allCall(el => {
         el.classList.toggle.apply(el.classList, args);
       }, this);
       return this;
     },
     // CSS
-    css: function(name, value) {
+    css(name, value) {
       if(value == null) {
         if(typeof name === "object" && name != null) {
-          for(var key in name) {
+          for(let key in name) {
             if(name.hasOwnProperty(key)) {
-              var val = name[key];
-              allCall(function(el) {
+              const val = name[key];
+              allCall(el => {
                 el.style.setProperty(key, val);
               }, this);
             }
@@ -204,20 +202,20 @@
           return (this[0] || {}).style.getPropertyValue(name);
         }
       } else {
-        allCall(function(el) {
+        allCall(el => {
           el.style.setProperty(name, value);
         }, this);
       }
       return this;
     },
-    index: function(i) {
+    index(i) {
       return new VOMO([this[i]]);
     },
-    append: function() {
-      var args = arguments;
-      allCall(function(el) {
-        for(var i = 0; i < args.length; i++) {
-          for(var j = 0; j < args[i].length; j++) {
+    append() {
+      const args = arguments;
+      allCall(el => {
+        for(let i = 0; i < args.length; i++) {
+          for(let j = 0; j < args[i].length; j++) {
             el.appendChild(args[i][j].cloneNode(true));
           }
           if(i === 0) args[i].remove();
@@ -225,11 +223,11 @@
       }, this);
       return this;
     },
-    prepend: function() {
-      var args = arguments;
-      allCall(function(el) {
-        for(var i = 0; i < args.length; i++) {
-          for(var j = 0; j < args[i].length; j++) {
+    prepend() {
+      const args = arguments;
+      allCall(el => {
+        for(let i = 0; i < args.length; i++) {
+          for(let j = 0; j < args[i].length; j++) {
             el.insertBefore(args[i][j].cloneNode(true), el.firstElementChild);
           }
           if(i === 0) args[i].remove();
@@ -237,28 +235,28 @@
       }, this);
       return this;
     },
-    parent: function() {
-      var array = [];
-      allCall(function(el) {
+    parent() {
+      let array = [];
+      allCall(el => {
         array.push(el.parentNode);
       }, this);
       return new VOMO(array);
     },
-    remove: function() {
-      allCall(function(el) {
-        var parent = el.parentNode;
+    remove() {
+      allCall(el => {
+        const parent = el.parentNode;
         if(parent != null) parent.removeChild(el);
       }, this);
     }
   };
-  var attrs = ["innerHTML", "value", "className"];
-  attrs.forEach(function(attr) {
+  const attrs = ["innerHTML", "value", "className"];
+  attrs.forEach(attr => {
     Object.defineProperty(VOM.fn, attr, {
-      get: function() {
+      get() {
         return this[0] ? this[0][attr] : undef;
       },
-      set: function(val) {
-        allCall(function(el) {
+      set(val) {
+        allCall(el => {
           el[attr] = val;
         }, this);
       }
@@ -266,42 +264,42 @@
   });
 
   // ArrayMethod
-  var arrayMethods = ["forEach", "pop", "push", "reverse", "shift", "unshift"];
-  arrayMethods.forEach(function(method) {
+  const arrayMethods = ["forEach", "pop", "push", "reverse", "shift", "unshift"];
+  arrayMethods.forEach(method => {
     VOM.fn[method] = Array.prototype[method];
   });
 
   // fn
-  var fn = {
+  const fn = {
     // elem
-    id: function(selector) {
-      var el = document.getElementById(selector);
+    id(selector) {
+      const el = document.getElementById(selector);
       return el == null ? new VOMO([]) : new VOMO([el]);
     },
-    class: function(selector) {
-      var els = document.getElementsByClassName(selector);
+    class(selector) {
+      const els = document.getElementsByClassName(selector);
       return new VOMO(els);
     },
-    name: function(selector) {
-      var els = document.getElementsByName(selector);
+    name(selector) {
+      const els = document.getElementsByName(selector);
       return new VOMO(els);
     },
-    tag: function(selector, namespace) {
-      var els = namespace == null ? document.getElementsByTagName(selector) : document.getElementsByTagNameNS(namespace, selector);
+    tag(selector, namespace) {
+      const els = namespace == null ? document.getElementsByTagName(selector) : document.getElementsByTagNameNS(namespace, selector);
       return new VOMO(els);
     },
-    query: function(selector) {
-      var els = document.querySelectorAll(selector);
+    query(selector) {
+      const els = document.querySelectorAll(selector);
       return new VOMO(els);
     },
-    createElem: function(tag, namespace) {
+    createElem(tag, namespace) {
       return new VOMO([namespace == null ? document.createElement(tag) : document.createElementNS(namespace, tag)]);
     },
-    createText: function(text) {
+    createText(text) {
       return new VOMO([document.createTextNode(text)]);
     },
     // object
-    type: function(obj) {
+    type(obj) {
       if(typeof obj === "number" && obj !== obj) {
         return "NaN";
       } else if(Array.isArray(obj)) {
@@ -310,9 +308,9 @@
         return Object.prototype.toString.call(obj).slice(8, -1);
       }
     },
-    clone: function(obj) {
-      var r = {};
-      for(var name in obj) {
+    clone(obj) {
+      let r = {};
+      for(let name in obj) {
         if(typeof obj[name] === "object" && obj[name] != null) {
           r[name] = fn.clone(obj[name]);
         } else {
@@ -322,7 +320,7 @@
       return r;
     }
   };
-  for(var key in fn) {
+  for(let key in fn) {
     if(fn.hasOwnProperty(key)) {
       VOM[key] = fn[key];
     }
