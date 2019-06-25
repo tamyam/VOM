@@ -7,7 +7,7 @@
  * https://github.com/tamyam/VOM/blob/master/LICENSE
  */
 
-;((root, document, undef) => {
+;((root, undef) => {
   // VOM selector
   const VOM = root.VOM = selector => {
     const match = selector.match(/^([#.]?)([A-Za-z](?:\w|\\[^ ])+)$/);
@@ -28,36 +28,32 @@
   };
 
   // VOMObject
-  const VOMO = root.VOMO = function(array) {
-    let temp = [];
-    const args = temp.filter.call(array, x => {
-      const returnBool = !~temp.indexOf(x) && x != null;
-      if(returnBool) temp.push(x);
-      return returnBool;
-    });
-    this.length = args.length;
-    if(this.length !== 0) {
-      if(this.length === 1) {
-        this[0] = args[0];
-      } else {
-        for(let i = 0; i < this.length; i++) {
-          this[i] = args[i];
-        }
-      }
-      this.tag = this[0] ? this[0].tagName : undef;
-    }
-  };
-
-  // VOM.fn
   const allCall = (func, self) => {
     for(let i = 0; i < self.length; i++) {
       func(self[i]);
     }
   };
 
-  VOM.fn = VOMO.prototype = {
-    constructor: VOM,
-
+  class VOMO {
+    constructor(array) {
+      let temp = [];
+      const args = temp.filter.call(array, x => {
+        const returnBool = !~temp.indexOf(x) && x != null;
+        if(returnBool) temp.push(x);
+        return returnBool;
+      });
+      this.length = args.length;
+      if(this.length !== 0) {
+        if(this.length === 1) {
+          this[0] = args[0];
+        } else {
+          for(let i = 0; i < this.length; i++) {
+            this[i] = args[i];
+          }
+        }
+        this.tag = this[0] ? this[0].tagName : undef;
+      }
+    }
     find(selector) {
       const match = selector.match(/^(\.?)([A-Za-z](?:\w|\\[^ ])+)$/);
       const selectorNames = {
@@ -73,28 +69,28 @@
       } else {
         return this.findQuery(selector);
       }
-    },
+    }
     findClass(selector) {
       let array = [];
       allCall(el => {
         array.push.apply(array, el.getElementsByClassName(selector));
       }, this);
       return new VOMO(array);
-    },
+    }
     findTag(selector, namespace = undef) {
       let array = [];
       allCall(el => {
         array.push.apply(array, namespace == null ? el.getElementsByTagName(selector) : el.getElementsByTagNameNS(namespace, selector));
       }, this);
       return new VOMO(array);
-    },
+    }
     findQuery(selector) {
       let array = [];
       allCall(el => {
         array.push.apply(array, el.querySelectorAll(selector));
       }, this);
       return new VOMO(array);
-    },
+    }
     attr(nameOrObj, value = undef) {
       if(value == null) {
         if(nameOrObj.constructor === String) {
@@ -117,7 +113,7 @@
         }, this);
       }
       return this;
-    },
+    }
     html(val = undef) {
       if(val == null) {
         return this.innerHTML;
@@ -125,7 +121,7 @@
         this.innerHTML = val;
         return this;
       }
-    },
+    }
     val(val = undef) {
       if(val == null) {
         return this.value;
@@ -133,7 +129,7 @@
         this.value = val;
         return this;
       }
-    },
+    }
     // EventListener
     on(types, listener, options = undef) {
       allCall(el => {
@@ -143,7 +139,7 @@
         });
       }, this);
       return this;
-    },
+    }
     off(types, listener, options = undef) {
       allCall(el => {
         const array = types.split(" ");
@@ -152,34 +148,34 @@
         });
       }, this);
       return this;
-    },
+    }
     // class
     addClass(...classname) {
       allCall(el => {
         el.classList.add(...classname);
       }, this);
       return this;
-    },
+    }
     removeClass(...classname) {
       const args = arguments;
       allCall(el => {
         el.classList.remove(...classname);
       }, this);
       return this;
-    },
+    }
     hasClass(classname) {
       let hasClass = false;
       allCall(el => {
         hasClass = el.classList.contains(classname) || hasClass;
       }, this);
       return hasClass;
-    },
+    }
     toggleClass(...classname) {
       allCall(el => {
         el.classList.toggle(...classname);
       }, this);
       return this;
-    },
+    }
     // CSS
     css(nameOrObj, value = undef) {
       if(value == null) {
@@ -202,10 +198,10 @@
         }, this);
       }
       return this;
-    },
+    }
     index(i) {
       return new VOMO([this[i]]);
-    },
+    }
     append(...elem) {
       allCall(el => {
         for(let i = 0; i < elem.length; i++) {
@@ -216,7 +212,7 @@
         }
       }, this);
       return this;
-    },
+    }
     prepend(...elem) {
       allCall(el => {
         for(let i = 0; i < elem.length; i++) {
@@ -227,21 +223,23 @@
         }
       }, this);
       return this;
-    },
+    }
     parent() {
       let array = [];
       allCall(el => {
         array.push(el.parentNode);
       }, this);
       return new VOMO(array);
-    },
+    }
     remove() {
       allCall(el => {
         const parent = el.parentNode;
         if(parent != null) parent.removeChild(el);
       }, this);
     }
-  };
+  }
+
+  VOM.fn = VOMO.prototype;
   const attrs = ["innerHTML", "value", "className"];
   attrs.forEach(attr => {
     Object.defineProperty(VOM.fn, attr, {
@@ -318,4 +316,4 @@
       VOM[key] = fn[key];
     }
   }
-})(this, document);
+})(this);
