@@ -63,6 +63,43 @@
   VOM.fn = VOMO.prototype = {
     constructor: VOM,
 
+    find: function(selector) {
+      var match = selector.match(/^(\.?)([A-Za-z](?:\w|\\[^ ])+)$/);
+      var selectorNames = {
+        ".": "findClass",
+        "": "findTag"
+      };
+      if(match != null) {
+        return this[
+          selectorNames[
+            match[1]
+          ]
+        ](match[2]);
+      } else {
+        return this.findQuery(selector);
+      }
+    },
+    findClass: function(selector) {
+      var array = [];
+      allCall(function(el) {
+        array.push.apply(array, el.getElementsByClassName(selector));
+      }, this);
+      return new VOMO(array);
+    },
+    findTag: function(selector, namespace) {
+      var array = [];
+      allCall(function(el) {
+        array.push.apply(array, namespace == null ? el.getElementsByTagName(selector) : el.getElementsByTagNameNS(namespace, selector));
+      }, this);
+      return new VOMO(array);
+    },
+    findQuery: function(selector) {
+      var array = [];
+      allCall(function(el) {
+        array.push.apply(array, el.querySelectorAll(selector));
+      }, this);
+      return new VOMO(array);
+    },
     attr: function(name, value) {
       if(value == null) {
         if(name.constructor === String) {
@@ -249,8 +286,8 @@
       var els = document.getElementsByName(selector);
       return new VOMO(els);
     },
-    tag: function(selector) {
-      var els = document.getElementsByTagName(selector);
+    tag: function(selector, namespace) {
+      var els = namespace == null ? document.getElementsByTagName(selector) : document.getElementsByTagNameNS(namespace, selector);
       return new VOMO(els);
     },
     query: function(selector) {
