@@ -266,6 +266,17 @@
       } else {
         return Object.prototype.toString.call(obj).slice(8, -1);
       }
+    },
+    clone: function(obj) {
+      var r = {};
+      for(var name in obj) {
+        if(typeof obj[name] === "object" && obj[name] != null) {
+          r[name] = fn.clone(obj[name]);
+        } else {
+          r[name] = obj[name];
+        }
+      }
+      return r;
     }
   };
   for(var key in fn) {
