@@ -36,7 +36,6 @@ VOM JavaScript Library reference
 - *elem*.innerHTML = *html*
 
 ### value
-There was an error in the past reference [val] (1.0‐1.1)
 - *value* = *elem*.val()
 - *elem*.val(*value*)
 - *value* = *elem*.value
@@ -47,7 +46,6 @@ There was an error in the past reference [val] (1.0‐1.1)
 - *elem*.off(*type*, *listener*, *options*?)
 
 ### class
-There was an error in the past reference [toggleClass] (1.0‐1.2.1)
 - *elem*.addClass(*...class*)
 - *elem*.removeClass(*...class*)
 - *elem*.hasClass(*class*)
