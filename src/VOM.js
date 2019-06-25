@@ -228,6 +228,12 @@
     });
   });
 
+  // ArrayMethod
+  var arrayMethods = ["forEach", "pop", "push", "reverse", "shift", "unshift"];
+  arrayMethods.forEach(function(method) {
+    VOM.fn[method] = Array.prototype[method];
+  });
+
   // fn
   var fn = {
     // elem
