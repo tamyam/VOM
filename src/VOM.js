@@ -31,24 +31,21 @@
   const VOMO = root.VOMO = function(array) {
     let temp = [];
     const args = temp.filter.call(array, x => {
-      const returnBool = !~temp.indexOf(x);
+      const returnBool = !~temp.indexOf(x) && x != null;
       if(returnBool) temp.push(x);
       return returnBool;
     });
     this.length = args.length;
-    switch(this.length) {
-      case 0:
-        break;
-      case 1:
+    if(this.length !== 0) {
+      if(this.length === 1) {
         this[0] = args[0];
-        break;
-      default:
+      } else {
         for(let i = 0; i < this.length; i++) {
           this[i] = args[i];
         }
-        break;
+      }
+      this.tag = this[0] ? this[0].tagName : undef;
     }
-    this.tag = this[0] ? this[0].tagName : undef;
   };
 
   // VOM.fn
