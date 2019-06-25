@@ -6,7 +6,7 @@ VOM JavaScript Library reference
 - *elem* = VOM.id(*id*)
 - *elem* = VOM.class(*class*)
 - *elem* = VOM.name(*name*)
-- *elem* = VOM.tag(*tagname*)
+- *elem* = VOM.tag(*tagname*, *namespace*?)
 - *elem* = VOM.query(*selector*)
 
 ## create element
@@ -16,6 +16,12 @@ VOM JavaScript Library reference
 ## object operation
 - *type* = VOM.type(*type*)
 - *obj* = VOM.clone(*obj*)
+
+## find element
+- *elem* = *elem*.find(*selector*)
+- *elem* = *elem*.findClass(*class*)
+- *elem* = *elem*.findTag(*tagname*, *namespace*?)
+- *elem* = *elem*.findQuery(*selector*)
 
 ## element operation
 ### attr
