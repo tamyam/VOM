@@ -149,6 +149,29 @@
         el.classList.toggle.apply(el.classList, args);
       }, this);
       return this;
+    },
+    // CSS
+    css: function(name, value) {
+      if(value == null) {
+        if(typeof name === "object" && name != null) {
+          for(var key in name) {
+            if(name.hasOwnProperty(key)) {
+              var val = name[key];
+              allCall(function(el) {
+                el.style.setProperty(key, val);
+              }, this);
+            }
+          }
+          return this;
+        } else {
+          return (this[0] || {}).style.getPropertyValue(name);
+        }
+      } else {
+        allCall(function(el) {
+          el.style.setProperty(name, value);
+        }, this);
+      }
+      return this;
     }
   };
   var attrs = ["innerHTML", "value", "className"];
